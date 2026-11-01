@@ -2,6 +2,17 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-10-31: Generate strict server handlers with oapi-codegen
+
+**Decision:** Generate `std-http-server` code in strict mode, and pin the generator with the `tool` directive in `api/go.mod`.
+
+**Alternatives considered:**
+
+- Non-strict handlers using `http.ResponseWriter`: closer to raw `net/http`, but handlers can return a response the spec doesn't allow.
+- Installing the generator globally: versions can differ between machines and CI.
+
+**Reasoning:** Strict handlers return typed responses, so the compiler helps keep the server aligned with the contract. A pinned tool means local and CI generation produce the same output, which the drift check depends on.
+
 ## 2026-10-31: Use default hosting URLs, with a same-origin API proxy planned for auth
 
 **Decision:** Do not buy a custom domain. Serve the frontend from `*.pages.dev` and the API from `*.onrender.com`. In step 2, route `/api` through a Cloudflare Pages Function so the browser sees one origin.
