@@ -1,0 +1,37 @@
+openapi: 3.0.3
+
+info:
+  title: Corkboard API
+  version: 0.1.0
+  description: A calm, social-media-free announcement board for high school clubs.
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Check that the API is running
+      security: []
+      responses:
+        "200":
+          description: The API is running.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+
+components:
+  schemas:
+    Health:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
+      additionalProperties: false
