@@ -18,6 +18,7 @@ These rules matter more than speed.
 - **Plan before code.** At the start of each task, explain your plan and wait for my go-ahead before writing code.
 - **Teach the Go.** I'm learning idiomatic Go. When you introduce a Go pattern, idiom, or standard library feature, briefly explain what it is and why it's the idiomatic choice. When a piece is a good learning exercise, offer to let me write it myself and review my version.
 - **Small, focused commits.** One logical change per commit, with clear messages (Conventional Commits style: `feat:`, `fix:`, `test:`, `chore:`, `docs:`, `ci:`).
+- **One branch per commit.** Create a new feature branch off the latest `main` for every new commit, and open its PR from that branch into `main`. Do not reuse long-lived branches.
 - **Never push, merge, or open PRs without asking.**
 - **Checks pass locally first.** Run the same checks CI runs before calling a task done.
 - **Log decisions.** When we make a meaningful technical choice, add a short entry to `DECISIONS.md` (date, decision, alternatives considered, reasoning).
