@@ -1,0 +1,83 @@
+// Command server runs the Corkboard HTTP API.
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/samirahafezi/corkboard/api/internal/api"
+)
+
+const (
+	defaultPort = "8080"
+
+	readHeaderTimeout = 5 * time.Second
+	readTimeout       = 10 * time.Second
+	writeTimeout      = 10 * time.Second
+	idleTimeout       = 60 * time.Second
+
+	shutdownTimeout = 10 * time.Second
+)
+
+func main() {
+	if err := run(); err != nil {
+		slog.Error("server stopped", "error", err)
+		os.Exit(1)
+	}
+}
+
+// run starts the server and blocks until it fails or receives a stop signal.
+func run() error {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	srv := &http.Server{
+		Addr:              ":" + port,
+		Handler:           api.Handler(api.NewStrictHandler(api.Server{}, nil)),
+		ReadHeaderTimeout: readHeaderTimeout,
+		ReadTimeout:       readTimeout,
+		WriteTimeout:      writeTimeout,
+		IdleTimeout:       idleTimeout,
+	}
+
+	// The buffer lets the goroutine send and exit even if nothing is receiving.
+	serveErr := make(chan error, 1)
+	go func() {
+		slog.Info("server listening", "port", port)
+		serveErr <- srv.ListenAndServe()
+	}()
+
+	select {
+	case err := <-serveErr:
+		return fmt.Errorf("serving: %w", err)
+	case <-ctx.Done():
+		slog.Info("shutting down")
+	}
+
+	// The signal context is already canceled, so shutdown needs a fresh one.
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("shutting down: %w", err)
+	}
+
+	if err := <-serveErr; !errors.Is(err, http.ErrServerClosed) {
+		return fmt.Errorf("serving: %w", err)
+	}
+
+	slog.Info("server stopped cleanly")
+	return nil
+}
