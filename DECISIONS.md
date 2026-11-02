@@ -2,6 +2,17 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-01: Start with a small golangci-lint configuration
+
+**Decision:** Use golangci-lint's standard linters plus `gosec` and `gofmt`, excluding generated code. The local version is 2.12.2, and CI will pin the same version.
+
+**Alternatives considered:**
+
+- Enable most linters: thorough, but noisy results tend to get ignored.
+- Use only `go vet`: it misses ignored errors, dead code, and common security mistakes.
+
+**Reasoning:** A short list keeps every finding worth acting on, and linters can be added as the code grows.
+
 ## 2026-10-31: Generate strict server handlers with oapi-codegen
 
 **Decision:** Generate `std-http-server` code in strict mode, and pin the generator with the `tool` directive in `api/go.mod`.

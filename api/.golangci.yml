@@ -1,0 +1,19 @@
+version: "2"
+
+linters:
+  # standard enables errcheck, govet, ineffassign, staticcheck, and unused.
+  default: standard
+  enable:
+    - gosec
+  exclusions:
+    generated: strict
+    paths:
+      - internal/api/api\.gen\.go
+
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: strict
+    paths:
+      - internal/api/api\.gen\.go
