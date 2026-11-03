@@ -2,7 +2,7 @@ GENERATED_FILES := api/internal/api/api.gen.go web/src/api/schema.gen.ts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help db-up db-down dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web check-generated check
+.PHONY: help db-up db-down dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
 
 help: ## List available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -51,6 +51,9 @@ build-api: ## Build the Go API
 build-web: ## Build the web app
 	npm --prefix web run --silent build
 
+audit-web: ## Audit production web dependencies
+	npm --prefix web audit --omit=dev
+
 check-generated: generate ## Fail if generated code is out of date with the spec
 	@if [ -n "$$(git status --porcelain -- $(GENERATED_FILES))" ]; then \
 		echo "Generated code is out of date. Run 'make generate' and commit the result."; \
@@ -58,4 +61,4 @@ check-generated: generate ## Fail if generated code is out of date with the spec
 		exit 1; \
 	fi
 
-check: lint typecheck test build check-generated ## Run everything CI runs
+check: lint typecheck test build audit-web check-generated ## Run everything CI runs
