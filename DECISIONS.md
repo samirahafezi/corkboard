@@ -2,6 +2,16 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-02: Use the API proxy from step 1 instead of CORS
+
+**Decision:** The frontend always calls `/api` on its own origin. Vite's dev server forwards those requests locally, and a Cloudflare Pages Function will do the same when deployed. This moves the proxy from step 2 to the step 1 deploy.
+
+**Alternatives considered:**
+
+- CORS middleware in Go for step 1, followed by the proxy in step 2: this adds code we would soon delete.
+
+**Reasoning:** Login needs the proxy anyway. Using it now means there's one path from browser to API, and the API never has to allow cross-origin requests.
+
 ## 2026-11-02: Pin TypeScript to 5.9.3
 
 **Decision:** Pin the web project to TypeScript 5.9.3 instead of the template's TypeScript 7. Revisit this when `openapi-typescript` supports version 7.
