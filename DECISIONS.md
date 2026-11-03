@@ -2,6 +2,29 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-02: Pin TypeScript to 5.9.3
+
+**Decision:** Pin the web project to TypeScript 5.9.3 instead of the template's TypeScript 7. Revisit this when `openapi-typescript` supports version 7.
+
+**Alternatives considered:**
+
+- Keep TypeScript 7 and run the generator through a pinned `npx` command: its dependencies stay outside the lockfile, and it downloads on each run.
+- Keep TypeScript 7 and give the generator its own `package.json`: fully pinned, but a second set of dependencies for one small tool.
+- Force the install with `--legacy-peer-deps`: this hides the conflict, and the generator may not work.
+
+**Reasoning:** `openapi-typescript` 7.13.0 requires TypeScript 5, and npm also rejected an `overrides` workaround. One compiler and one lockfile keep generation repeatable for the drift check, and TypeScript 7's speed barely matters in an app this small.
+
+## 2026-11-02: Use openapi-fetch for API calls
+
+**Decision:** Pair `openapi-typescript` with `openapi-fetch` for frontend API calls. Accept a moderate `minimatch` audit finding in the generator's dev dependencies for now.
+
+**Alternatives considered:**
+
+- Plain `fetch` with handwritten types: types could drift from the contract.
+- `npm audit fix --force`: this downgrades `openapi-typescript` to version 6.
+
+**Reasoning:** `openapi-typescript` only generates types. `openapi-fetch` comes from the same project, is small, and rejects wrong paths and fields at compile time. The audit finding doesn't reach production, and the generator only reads our own spec, so CI should audit production dependencies with `npm audit --omit=dev`.
+
 ## 2026-11-01: Start with a small golangci-lint configuration
 
 **Decision:** Use golangci-lint's standard linters plus `gosec` and `gofmt`, excluding generated code. The local version is 2.12.2, and CI will pin the same version.
