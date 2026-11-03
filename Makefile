@@ -2,7 +2,7 @@ GENERATED_FILES := api/internal/api/api.gen.go web/src/api/schema.gen.ts
 
 .DEFAULT_GOAL := help
 
-.PHONY: help db-up db-down dev-api dev-web generate test lint typecheck build check-generated check
+.PHONY: help db-up db-down dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web check-generated check
 
 help: ## List available commands
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -23,20 +23,32 @@ generate: ## Regenerate Go and TypeScript code from the OpenAPI spec
 	cd api && go generate ./...
 	npm --prefix web run --silent generate
 
-test: ## Run Go and web tests
+test: test-api test-web ## Run Go and web tests
+
+test-api: ## Run Go tests
 	cd api && go test ./...
+
+test-web: ## Run web tests
 	npm --prefix web test
 
-lint: ## Run go vet, golangci-lint, and Oxlint
+lint: lint-api lint-web ## Run all linters
+
+lint-api: ## Run go vet and golangci-lint
 	cd api && go vet ./...
 	cd api && golangci-lint run ./...
+
+lint-web: ## Run Oxlint
 	npm --prefix web run --silent lint
 
 typecheck: ## Run the TypeScript check
 	npm --prefix web run --silent typecheck
 
-build: ## Build the API and web app
+build: build-api build-web ## Build the API and web app
+
+build-api: ## Build the Go API
 	cd api && go build ./...
+
+build-web: ## Build the web app
 	npm --prefix web run --silent build
 
 check-generated: generate ## Fail if generated code is out of date with the spec
