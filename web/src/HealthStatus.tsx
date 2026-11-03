@@ -19,7 +19,7 @@ function HealthStatus() {
 
   let message = 'Checking the API…'
   if (isError) {
-    message = 'API status: broken'
+    message = 'API status: unavailable'
   } else if (!isPending) {
     message = `API status: ${data?.status}`
   }
