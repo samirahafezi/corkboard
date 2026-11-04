@@ -111,4 +111,20 @@ Update "Current step" above when a step is complete.
 
 ## Commands
 
-To be filled in during step 1 (dev server, tests, linting, code generation, database migrations).
+Run from the repo root. `make help` lists every target.
+
+**One-time setup:** install Go, Node (version in `.nvmrc`, via fnm), Docker Desktop, and golangci-lint. Then copy `.env.example` to `.env`, and run `npm --prefix web ci`.
+
+| Task | Command |
+| --- | --- |
+| Start or stop local Postgres | `make db-up` / `make db-down` |
+| Run the API on port 8080 | `make dev-api` |
+| Run the web app on port 5173, with `/api` forwarded to the API | `make dev-web` |
+| Regenerate code after changing the spec | `make generate` |
+| Run tests | `make test` (or `test-api`, `test-web`) |
+| Lint | `make lint` (or `lint-api`, `lint-web`) |
+| Type check | `make typecheck` |
+| Check generated code is current | `make check-generated` |
+| Run everything CI runs | `make check` |
+
+Database migrations arrive in step 2.
