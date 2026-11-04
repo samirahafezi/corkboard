@@ -20,3 +20,6 @@ api/bin/
 
 # Logs
 *.log
+
+# Wrangler local state
+.wrangler/
