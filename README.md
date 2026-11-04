@@ -49,7 +49,7 @@ This project is also an exercise in building software well:
 
 ## Roadmap
 
-- [ ] Foundation: repo structure, CI pipeline, API contract, deployments
+- [x] Foundation: repo structure, CI pipeline, API contract
 - [ ] Passwordless sign-in and roles
 - [ ] Club directory and following
 - [ ] Announcements and advisor approval
