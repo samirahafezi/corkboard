@@ -48,7 +48,7 @@ These shape design decisions, not just copy:
 | Testing | Go `testing` + testcontainers (real Postgres), Vitest, Playwright, axe |
 | CI | GitHub Actions |
 | Local dev | Postgres in Docker |
-| Hosting | Cloudflare Pages (frontend), Render (API), separate managed Postgres |
+| Hosting | Later, only when sharing the app: Cloudflare Pages (frontend), Render (API), separate managed Postgres. Until then, everything runs locally. |
 
 ## Repo layout
 
@@ -97,9 +97,9 @@ corkboard/
 
 ## Build plan
 
-Current step: **1. Foundation**
+Current step: **2. Auth and roles**
 
-1. **Foundation.** Monorepo structure, Go health-check endpoint, React page that calls it, OpenAPI spec with code generation, local Postgres in Docker. CI runs Go tests, `go vet`, linting, TypeScript checks, and an OpenAPI drift check, all blocking merges. Both halves deployed.
+1. **Foundation.** Monorepo structure, Go health-check endpoint, React page that calls it, OpenAPI spec with code generation, local Postgres in Docker. CI runs Go tests, `go vet`, linting, TypeScript checks, and an OpenAPI drift check, all blocking merges. Deployment is deferred until the app is shared (see `DECISIONS.md`).
 2. **Auth and roles.** Magic-link sign-in, sessions, user roles, authorization middleware, and tests proving each role can't do what it shouldn't.
 3. **Clubs and following.** Club directory, club pages, follow and unfollow.
 4. **Announcements and approval.** The state machine above, with tests for every transition.

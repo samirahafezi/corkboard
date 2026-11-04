@@ -2,6 +2,17 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-03: Defer deployment until the app is shared
+
+**Decision:** Build and run Corkboard locally, with no hosting accounts, until there's a reason to show it to other people. Step 1 is complete without deploying. Keep `render.yaml` and the Pages Function in the repo, unused, so deploying later mostly means creating the accounts.
+
+**Alternatives considered:**
+
+- Deploy now on Render and Cloudflare Pages: free, but it adds accounts and online services before anyone needs to use the app.
+- Remove the deployment config: a cleaner repo, but that work would need redoing later.
+
+**Reasoning:** This is a learning project meant to grow slowly. Local Docker Postgres and CI on GitHub cover everything needed for now. Later steps that assume online services, such as email for sign-in and the digest, will use local alternatives.
+
 ## 2026-11-02: Use the API proxy from step 1 instead of CORS
 
 **Decision:** The frontend always calls `/api` on its own origin. Vite's dev server forwards those requests locally, and a Cloudflare Pages Function will do the same when deployed. This moves the proxy from step 2 to the step 1 deploy.
