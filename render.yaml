@@ -1,0 +1,12 @@
+# Render Blueprint for the Corkboard API. See https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: corkboard-api
+    runtime: go
+    rootDir: api
+    buildCommand: go build -trimpath -o bin/server ./cmd/server
+    startCommand: ./bin/server
+    healthCheckPath: /health
+    plan: free
+    region: virginia
+    autoDeployTrigger: checksPass
