@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "generate": "openapi-typescript ../openapi/openapi.yaml -o src/api/schema.gen.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "preview:pages": "wrangler pages dev dist --compatibility-date 2026-11-01 --binding API_ORIGIN=http://localhost:8080"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.105.3",
@@ -30,6 +31,7 @@
     "oxlint": "^1.89.0",
     "typescript": "5.9.3",
     "vite": "^8.3.5",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.157.0"
   }
 }
