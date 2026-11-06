@@ -1,11 +1,18 @@
 GENERATED_FILES := api/internal/api/api.gen.go web/src/api/schema.gen.ts
 
+# Load local settings, such as DATABASE_URL, from .env when it exists, and
+# pass them to every command. CI has no .env and sets what it needs itself.
+ifneq (,$(wildcard .env))
+include .env
+export
+endif
+
 .DEFAULT_GOAL := help
 
 .PHONY: help db-up db-down dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
 
 help: ## List available commands
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
+	@grep -E '^[a-z-]+:.*## ' $(firstword $(MAKEFILE_LIST)) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
 
 db-up: ## Start local Postgres
 	docker compose up -d --wait
