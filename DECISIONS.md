@@ -2,6 +2,19 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-08: Run goose migrations through our own small command
+
+**Decision:** Manage schema changes with goose, using plain SQL files in `api/migrations/`. Run them through `api/cmd/migrate`, which uses goose's core package and the existing `pgx` driver. Migrations run only when you ask (`make migrate`), not at server startup.
+
+**Alternatives considered:**
+
+- The goose command-line tool, pinned with the `tool` directive: this added 61 modules to `go.mod`, mostly drivers for databases we don't use.
+- golang-migrate: similar to goose, but goose's Go package will also set up test databases.
+- Atlas: more powerful, but more than this project needs.
+- Running migrations at server startup: convenient, but schema changes would happen as a side effect of starting a server.
+
+**Reasoning:** Our own command adds only 4 modules, and the code it uses is the same code that will set up test databases. Running migrations explicitly makes it clear when the schema changes.
+
 ## 2026-11-03: Defer deployment until the app is shared
 
 **Decision:** Build and run Corkboard locally, with no hosting accounts, until there's a reason to show it to other people. Step 1 is complete without deploying. Keep `render.yaml` and the Pages Function in the repo, unused, so deploying later mostly means creating the accounts.
