@@ -9,7 +9,7 @@ endif
 
 .DEFAULT_GOAL := help
 
-.PHONY: help db-up db-down dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
+.PHONY: help db-up db-down migrate migrate-down migrate-status migration dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
 
 help: ## List available commands
 	@grep -E '^[a-z-]+:.*## ' $(firstword $(MAKEFILE_LIST)) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -19,6 +19,19 @@ db-up: ## Start local Postgres
 
 db-down: ## Stop local Postgres and keep its data
 	docker compose down
+
+migrate: ## Apply pending database migrations
+	cd api && go run ./cmd/migrate up
+
+migrate-down: ## Undo the most recent migration
+	cd api && go run ./cmd/migrate down
+
+migrate-status: ## List migrations and whether they've been applied
+	cd api && go run ./cmd/migrate status
+
+migration: ## Create a migration: make migration name=create_users
+	@test -n "$(name)" || { echo "Usage: make migration name=create_users"; exit 1; }
+	cd api && go run ./cmd/migrate create $(name)
 
 dev-api: ## Run the Go API server
 	cd api && go run ./cmd/server
