@@ -113,18 +113,20 @@ Update "Current step" above when a step is complete.
 
 Run from the repo root. `make help` lists every target.
 
-**One-time setup:** install Go, Node (version in `.nvmrc`, via fnm), Docker Desktop, and golangci-lint. Then copy `.env.example` to `.env`, and run `npm --prefix web ci`.
+**One-time setup:** install Go, Node (version in `.nvmrc`, via fnm), Docker Desktop, golangci-lint, and sqlc 1.31.1. Then copy `.env.example` to `.env`, run `npm --prefix web ci`, and run `make db-up` and `make migrate`.
 
 | Task | Command |
 | --- | --- |
 | Start or stop local Postgres | `make db-up` / `make db-down` |
+| Apply database migrations | `make migrate` (also `migrate-status`, `migrate-down`) |
+| Create a migration | `make migration name=create_clubs` |
 | Run the API on port 8080 | `make dev-api` |
 | Run the web app on port 5173, with `/api` forwarded to the API | `make dev-web` |
-| Regenerate code after changing the spec | `make generate` |
+| Regenerate code after changing the spec, queries, or migrations | `make generate` |
 | Run tests | `make test` (or `test-api`, `test-web`) |
 | Lint | `make lint` (or `lint-api`, `lint-web`) |
 | Type check | `make typecheck` |
 | Check generated code is current | `make check-generated` |
 | Run everything CI runs | `make check` |
 
-Database migrations arrive in step 2.
+For the local database (psql, handy queries, resetting, GUI clients, and troubleshooting), see `docs/database.md`.
