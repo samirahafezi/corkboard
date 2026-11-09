@@ -2,6 +2,27 @@
 
 A short log of meaningful technical choices, newest first. The initial stack is listed in `CLAUDE.md`.
 
+## 2026-11-08: Base roles now, club roles as relationships later
+
+**Decision:** Each user has one base role: `student`, `staff`, or `admin`. Club lead and staff advisor will become links between a user and a specific club in step 3, rather than roles on the user.
+
+**Alternatives considered:**
+
+- Four roles on the user, as first listed in `CLAUDE.md`: a club lead leads a particular club, so a user-level role couldn't say which one.
+
+**Reasoning:** Authorization checks need both "what kind of user is this?" and "what is their relationship to this club?". Keeping these separate keeps each check simple.
+
+## 2026-11-08: Only admins can add users
+
+**Decision:** No one can create their own account. An admin adds users, and a command creates the first admin. Users store only an email address and a role.
+
+**Alternatives considered:**
+
+- Anyone with the school's email domain becomes a student on first sign-in: convenient, but it depends on every address at that domain being a current student.
+- Anyone can sign up: the simplest option, but not suitable for an app used by teenagers at one school.
+
+**Reasoning:** This keeps people outside the school from making accounts and matches the privacy-first principle. Sign-in responses won't reveal whether an address has an account.
+
 ## 2026-11-08: Run goose migrations through our own small command
 
 **Decision:** Manage schema changes with goose, using plain SQL files in `api/migrations/`. Run them through `api/cmd/migrate`, which uses goose's core package and the existing `pgx` driver. Migrations run only when you ask (`make migrate`), not at server startup.
