@@ -1,0 +1,15 @@
+# Generates type-safe Go from the SQL in queries/. See https://docs.sqlc.dev
+version: "2"
+sql:
+  - engine: postgresql
+    schema: migrations
+    queries: queries
+    gen:
+      go:
+        package: db
+        out: internal/db
+        sql_package: pgx/v5
+        overrides:
+          # created_at is NOT NULL, so a plain time.Time is simpler than pgtype.Timestamptz.
+          - db_type: timestamptz
+            go_type: time.Time
