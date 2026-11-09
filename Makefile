@@ -1,4 +1,4 @@
-GENERATED_FILES := api/internal/api/api.gen.go web/src/api/schema.gen.ts
+GENERATED_FILES := api/internal/api/api.gen.go api/internal/db web/src/api/schema.gen.ts
 
 # Load local settings, such as DATABASE_URL, from .env when it exists, and
 # pass them to every command. CI has no .env and sets what it needs itself.
@@ -39,8 +39,9 @@ dev-api: ## Run the Go API server
 dev-web: ## Run the Vite dev server
 	npm --prefix web run dev
 
-generate: ## Regenerate Go and TypeScript code from the OpenAPI spec
+generate: ## Regenerate code from the OpenAPI spec and SQL queries
 	cd api && go generate ./...
+	cd api && sqlc generate
 	npm --prefix web run --silent generate
 
 test: test-api test-web ## Run Go and web tests
