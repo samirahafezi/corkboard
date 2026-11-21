@@ -9,7 +9,7 @@ endif
 
 .DEFAULT_GOAL := help
 
-.PHONY: help db-up db-down migrate migrate-down migrate-status migration dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
+.PHONY: help db-up db-down migrate migrate-down migrate-status migration create-admin dev-api dev-web generate test test-api test-web lint lint-api lint-web typecheck build build-api build-web audit-web check-generated check
 
 help: ## List available commands
 	@grep -E '^[a-z-]+:.*## ' $(firstword $(MAKEFILE_LIST)) | awk -F ':.*## ' '{printf "  %-16s %s\n", $$1, $$2}'
@@ -32,6 +32,10 @@ migrate-status: ## List migrations and whether they've been applied
 migration: ## Create a migration: make migration name=create_users
 	@test -n "$(name)" || { echo "Usage: make migration name=create_users"; exit 1; }
 	cd api && go run ./cmd/migrate create $(name)
+
+create-admin: ## Add an admin user: make create-admin email=you@school.org
+	@test -n "$(email)" || { echo "Usage: make create-admin email=you@school.org"; exit 1; }
+	cd api && go run ./cmd/create-admin -email '$(email)'
 
 dev-api: ## Run the Go API server
 	cd api && go run ./cmd/server
